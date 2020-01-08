@@ -1,0 +1,9 @@
+/*
+^[a] printf("starting a\n");
+[a] printf("a\n");
+[b] printf("b\n");
+[c] printf("c\n");
+[d] printf("d\n");
+^[e] printf("ending e\n");
+[e] printf("e\n");
+*/

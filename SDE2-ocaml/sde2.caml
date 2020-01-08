@@ -1,0 +1,108 @@
+(* Andrew Soby SDE2.caml This is the ocaml file.*)
+
+(*netUnit function*)
+
+(*if((List.tl inputs == []) && (List.tl weights == []))
+    then ((List.hd inputs) *. (List.hd weights))
+
+
+    if((List.hd inputs == []) || (List.hd weights == []))
+        then [0.]
+    *)
+
+let rec netUnit = function (inputs, weights) ->
+  if((inputs != []) && (weights != []))
+      then  (((List.hd inputs) *. (List.hd weights)) +. netUnit(List.tl inputs, List.tl weights))
+  else 0.0;;
+
+(*netAll function*)
+let rec netAll = function (state, weightMatrix) ->
+  if(List.tl weightMatrix == [])
+      then [netUnit(state, List.hd weightMatrix)]
+  else ((netUnit(state, List.hd weightMatrix)))::netAll(state, List.tl weightMatrix);;
+
+(*hop11Activation function*)
+let hop11Activation = function(net, oldo) ->
+if(net < 0.0)
+  then -1.0
+else
+  if(net > 0.0)
+    then 1.0
+  else
+    oldo;;
+
+(* next state helper function change the if condition to !=
+let rec getStateInfo = function (currentState, netsFound)  ->
+  if((List.tl currentState == []) && (List.tl netsFound == []))
+    then [hop11Activation(List.hd netsFound, List.hd currentState)]
+  else
+    hop11Activation(List.hd netsFound, List.hd currentState)::getStateInfo(List.tl currentState, List.tl netsFound);;
+
+(*nextState function*)
+let nextState = function (currentState, weightMatrix) ->
+    getStateInfo(currentState, netAll(currentState, weightMatrix));;
+
+
+(*updateN function change if and else condition for n == 0*)
+let rec updateN = function(currentState, weightMatrix, n) ->
+    if(n > 0)
+      then updateN(nextState(currentState, weightMatrix), weightMatrix, n-1)
+    else
+      currentState;;
+
+(* hop hopTrainAstate helpers *)
+
+let rec pathFromNode = function(currentNode, listIndex, currentIndex, origState) ->
+  if(List.tl origState == [])
+    then
+      if(listIndex == currentIndex)
+        then [0.]
+      else
+        [(currentNode *. List.hd origState)]
+  else
+  if(listIndex == currentIndex)
+    then 0.:: pathFromNode(currentNode, listIndex, currentIndex + 1, List.tl origState)
+  else
+    (currentNode *. List.hd origState) :: pathFromNode(currentNode, listIndex, currentIndex +1, List.tl origState);;
+
+let rec createPaths = function(aState, listIndex, origState) ->
+  if(List.tl aState == [])
+    then [pathFromNode(List.hd aState,listIndex, 0, origState)]
+  else
+    pathFromNode(List.hd aState, listIndex, 0,origState) :: createPaths(List.tl aState, listIndex+1, origState);;
+
+
+(*hopTrainAstate function*)
+let hopTrainAstate = function(aState) ->
+    createPaths(aState,0,aState);;
+
+(* hoptrain helpers *)
+
+let rec hopInner = function(allStates, states) ->
+  if(List.tl allStates == [])
+    then [List.hd allStates +. List.hd states]
+  else (List.hd allStates +. List.hd states) :: hopInner(List.tl allStates, List.tl states);;
+
+let rec hopOuter = function(allStates, states) ->
+  if(List.tl allStates == [])
+    then [hopInner((List.hd allStates), (List.hd(List.hd states)))]
+  else [hopInner((List.hd allStates), (List.hd(List.hd states)))] @ (hopOuter(List.tl allStates, [(List.tl(List.hd states))]));;
+
+let rec hopMatrix = function(allStates) ->
+  if(List.tl allStates == [])
+    then [hopTrainAstate(List.hd allStates)]
+  else [hopTrainAstate(List.hd allStates)] @ hopMatrix(List.tl allStates);;
+
+let rec hopHelper = function(allStates) ->
+  if(List.tl allStates == [])
+    then (List.hd allStates)
+  else
+    if((List.tl(List.tl allStates)) ==[])
+      then hopOuter(List.hd allStates, List.tl allStates)
+    else
+      hopOuter(hopHelper(List.tl allStates), [List.hd allStates]);;
+
+(*hopTrain function*)
+
+let hopTrain = function(allStates) ->
+  hopHelper(hopMatrix(allStates));;

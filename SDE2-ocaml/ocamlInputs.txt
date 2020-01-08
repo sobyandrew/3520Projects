@@ -1,0 +1,46 @@
+#use"sde2.caml";;
+
+let weights = [[0.;-1.;1.;-1.]; [-1.;0.;-1.;1.]; [1.;-1.;0.;-1.]; [-1.;1.;-1.;0.]];;
+
+let weights2 = [[0.;1.;-1.;-1.]; [1.;0.;-3.;1.]; [-1.;-3.;0.;-1.]; [-1.;1.;-1.;0.]];;
+
+let os1 = [1.0; -1.;1.;-1.];;
+
+let os2 = [-1.; -1.; 1.; -1.];;
+
+let os3 = [-1.; -1.; 1.; 1.;]
+
+(*let w = hopTrain([os1])*)
+
+let we = [[0.0; -1.0];[-1.0; 0.0]];;
+
+let oi=[-1.0;-1.0];;
+
+netUnit([-1.; -1.; 1.; -1.],[1.; 0.; -3.; 1.]);;
+netUnit([-1.; -1.],[1.; 0.]);;
+netUnit(os1,[1.;2.;3.;1.]);;
+
+netAll(os1,weights);;
+netAll(os2,weights);;
+
+hop11Activation(-3., 1.);;
+hop11Activation(3., 1.);;
+hop11Activation(0., 1.);;
+
+nextState(os1,weights);;
+nextState(os2,weights);;
+nextState(os1,weights2);;
+nextState(nextState(os1,weights2),weights2);;
+
+
+updateN(oi,we,1);;
+updateN(oi,we,2);;
+updateN(oi,we,3);;
+updateN(oi,we,4);;
+
+hopTrainAstate(os1);;
+hopTrainAstate(os2);;
+hopTrainAstate(os3);;
+
+let w=hopTrain([os1]);;
+let w2 = hopTrain([os1;os2;os3]);;

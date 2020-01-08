@@ -1,0 +1,24 @@
+%{
+ #include "sde1.tab.h"
+ //[$a]{1}[a]*[b]+[c]+[d][e]*[$e]{1} printf("found a good string");
+ //[a]^[e]$ {return ENDE;}
+ //<<EOF>> return 0;
+ #define YY_NO_UNPUT
+ #define YY_NO_INPUT
+
+%}
+%option input
+%%
+[\r\t\n]+ ;
+^[a] {return BEGINA;}
+[a]$ {return ENDA;}
+[a] {return A;}
+[b] {return B;}
+[c] {return C;}
+[d] {return D;}
+[e]$ {return ENDE;}
+^[e] {return BEGINE;}
+[e] {return E;}
+[f-z] {printf("%c", yytext[yyleng-1]);}
+
+%%

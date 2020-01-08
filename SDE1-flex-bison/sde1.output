@@ -1,0 +1,340 @@
+Grammar
+
+    0 $accept: starthere $end
+
+    1 starthere: BEGINA gotoa ENDE
+    2          | BEGINE E gotoetwo ENDA
+
+    3 gotoa: A gotoa E
+    4      | B gotob
+    5      | A
+
+    6 gotob: B gotob
+    7      | C gotoc D
+
+    8 gotoc: C gotoc D
+    9      | %empty
+
+   10 gotoetwo: E E gotoetwo A
+   11         | D D gotoctwo
+
+   12 gotoctwo: C C C gotoctwo B
+   13         | %empty
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+BEGINA (258) 1
+A (259) 3 5 10
+B (260) 4 6 12
+C (261) 7 8 12
+D (262) 7 8 11
+E (263) 2 3 10
+ENDE (264) 1
+ENDA (265) 2
+BEGINE (266) 2
+
+
+Nonterminals, with rules where they appear
+
+$accept (12)
+    on left: 0
+starthere (13)
+    on left: 1 2, on right: 0
+gotoa (14)
+    on left: 3 4 5, on right: 1 3
+gotob (15)
+    on left: 6 7, on right: 4 6
+gotoc (16)
+    on left: 8 9, on right: 7 8
+gotoetwo (17)
+    on left: 10 11, on right: 2 10
+gotoctwo (18)
+    on left: 12 13, on right: 11 12
+
+
+State 0
+
+    0 $accept: . starthere $end
+
+    BEGINA  shift, and go to state 1
+    BEGINE  shift, and go to state 2
+
+    starthere  go to state 3
+
+
+State 1
+
+    1 starthere: BEGINA . gotoa ENDE
+
+    A  shift, and go to state 4
+    B  shift, and go to state 5
+
+    gotoa  go to state 6
+
+
+State 2
+
+    2 starthere: BEGINE . E gotoetwo ENDA
+
+    E  shift, and go to state 7
+
+
+State 3
+
+    0 $accept: starthere . $end
+
+    $end  shift, and go to state 8
+
+
+State 4
+
+    3 gotoa: A . gotoa E
+    5      | A .
+
+    A  shift, and go to state 4
+    B  shift, and go to state 5
+
+    $default  reduce using rule 5 (gotoa)
+
+    gotoa  go to state 9
+
+
+State 5
+
+    4 gotoa: B . gotob
+
+    B  shift, and go to state 10
+    C  shift, and go to state 11
+
+    gotob  go to state 12
+
+
+State 6
+
+    1 starthere: BEGINA gotoa . ENDE
+
+    ENDE  shift, and go to state 13
+
+
+State 7
+
+    2 starthere: BEGINE E . gotoetwo ENDA
+
+    D  shift, and go to state 14
+    E  shift, and go to state 15
+
+    gotoetwo  go to state 16
+
+
+State 8
+
+    0 $accept: starthere $end .
+
+    $default  accept
+
+
+State 9
+
+    3 gotoa: A gotoa . E
+
+    E  shift, and go to state 17
+
+
+State 10
+
+    6 gotob: B . gotob
+
+    B  shift, and go to state 10
+    C  shift, and go to state 11
+
+    gotob  go to state 18
+
+
+State 11
+
+    7 gotob: C . gotoc D
+
+    C  shift, and go to state 19
+
+    $default  reduce using rule 9 (gotoc)
+
+    gotoc  go to state 20
+
+
+State 12
+
+    4 gotoa: B gotob .
+
+    $default  reduce using rule 4 (gotoa)
+
+
+State 13
+
+    1 starthere: BEGINA gotoa ENDE .
+
+    $default  reduce using rule 1 (starthere)
+
+
+State 14
+
+   11 gotoetwo: D . D gotoctwo
+
+    D  shift, and go to state 21
+
+
+State 15
+
+   10 gotoetwo: E . E gotoetwo A
+
+    E  shift, and go to state 22
+
+
+State 16
+
+    2 starthere: BEGINE E gotoetwo . ENDA
+
+    ENDA  shift, and go to state 23
+
+
+State 17
+
+    3 gotoa: A gotoa E .
+
+    $default  reduce using rule 3 (gotoa)
+
+
+State 18
+
+    6 gotob: B gotob .
+
+    $default  reduce using rule 6 (gotob)
+
+
+State 19
+
+    8 gotoc: C . gotoc D
+
+    C  shift, and go to state 19
+
+    $default  reduce using rule 9 (gotoc)
+
+    gotoc  go to state 24
+
+
+State 20
+
+    7 gotob: C gotoc . D
+
+    D  shift, and go to state 25
+
+
+State 21
+
+   11 gotoetwo: D D . gotoctwo
+
+    C  shift, and go to state 26
+
+    $default  reduce using rule 13 (gotoctwo)
+
+    gotoctwo  go to state 27
+
+
+State 22
+
+   10 gotoetwo: E E . gotoetwo A
+
+    D  shift, and go to state 14
+    E  shift, and go to state 15
+
+    gotoetwo  go to state 28
+
+
+State 23
+
+    2 starthere: BEGINE E gotoetwo ENDA .
+
+    $default  reduce using rule 2 (starthere)
+
+
+State 24
+
+    8 gotoc: C gotoc . D
+
+    D  shift, and go to state 29
+
+
+State 25
+
+    7 gotob: C gotoc D .
+
+    $default  reduce using rule 7 (gotob)
+
+
+State 26
+
+   12 gotoctwo: C . C C gotoctwo B
+
+    C  shift, and go to state 30
+
+
+State 27
+
+   11 gotoetwo: D D gotoctwo .
+
+    $default  reduce using rule 11 (gotoetwo)
+
+
+State 28
+
+   10 gotoetwo: E E gotoetwo . A
+
+    A  shift, and go to state 31
+
+
+State 29
+
+    8 gotoc: C gotoc D .
+
+    $default  reduce using rule 8 (gotoc)
+
+
+State 30
+
+   12 gotoctwo: C C . C gotoctwo B
+
+    C  shift, and go to state 32
+
+
+State 31
+
+   10 gotoetwo: E E gotoetwo A .
+
+    $default  reduce using rule 10 (gotoetwo)
+
+
+State 32
+
+   12 gotoctwo: C C C . gotoctwo B
+
+    C  shift, and go to state 26
+
+    $default  reduce using rule 13 (gotoctwo)
+
+    gotoctwo  go to state 33
+
+
+State 33
+
+   12 gotoctwo: C C C gotoctwo . B
+
+    B  shift, and go to state 34
+
+
+State 34
+
+   12 gotoctwo: C C C gotoctwo B .
+
+    $default  reduce using rule 12 (gotoctwo)
